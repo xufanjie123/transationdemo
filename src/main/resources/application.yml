@@ -1,0 +1,85 @@
+spring:
+  rabbitmq:
+    host: 47.52.89.152
+    port: 5672
+    username: admin
+    password: admin
+    publisher-confirms: true
+    listener:
+      direct:
+        acknowledge-mode: manual
+        retry:
+          enabled: true
+          max-attempts: 5
+      simple:
+#        acknowledge-mode: manual
+        retry:
+          enabled: true
+          max-attempts: 5
+  activemq:
+    broker-url: tcp://47.52.89.152:61616
+    user: admin
+    password: admin
+    pool:
+      enabled: false
+  application:
+    name: transationdemo
+  datasource:
+    dbuser:
+      jdbc-url: jdbc:mysql://47.52.89.152:3306/test
+      username: root
+      password: 123456
+      initialSize: 5
+      maxActive: 20
+      maxWait: 60000
+      minEvictableIdleTimeMillis: 300000
+      minIdle: 5
+      testOnBorrow: false
+      testOnReturn: false
+      testWhileIdle: true
+      timeBetweenEvictionRunsMillis: 60000
+      validationQuery: select 'x'
+      driver-class-name: com.mysql.jdbc.Driver
+    dborders:
+      jdbc-url: jdbc:mysql://47.52.89.152:3307/test
+      username: root
+      password: 123456
+      initialSize: 5
+      maxActive: 20
+      maxWait: 60000
+      minEvictableIdleTimeMillis: 300000
+      minIdle: 5
+      testOnBorrow: false
+      testOnReturn: false
+      testWhileIdle: true
+      timeBetweenEvictionRunsMillis: 60000
+      validationQuery: select 'x'
+      driver-class-name: com.mysql.jdbc.Driver
+mybatis:
+  mapper-locations: classpath:mapping/*.xml
+  type-aliases-package: com.fanjiexu.entity
+server:
+  port: 8765
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://47.52.89.152:8761/eureka/
+###producer
+#该应用是否启用生产者
+rocketmq:
+  producer:
+    isOnOff: on
+    #发送同一类消息的设置为同一个group，保证唯一,默认不需要设置，rocketmq会使用ip@pid(pid代表jvm名字)作为唯一标示
+    groupName: ${spring.application.name}
+    #mq的nameserver地址
+    namesrvAddr: 47.52.89.152:9876
+    #消息最大长度 默认1024*4(4M)
+    maxMessageSize: 4096
+    #发送消息超时时间,默认3000
+    sendMsgTimeout: 3000
+    #发送消息失败重试次数，默认2
+    retryTimesWhenSendFailed: 2
+    default: true
+  consumer:
+    groupName: ${spring.application.name}
+    namesrvAddr: 47.52.89.152:9876
